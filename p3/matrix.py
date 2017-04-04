@@ -52,15 +52,42 @@ def addScaledRow(M, r1, r2, scale):
 def augmentMatrix(A, b):
     Ab = [x + y for x, y in zip(A, b)]
     return Ab
+    
+def swapRows(M, r1, r2):
+    M[r1], M[r2] = M[r2], M[r1]
+    return 
+  
+def scaleRow(M, r, scale):
+    M[r] = [scale * x for x in M[r]]
+    return
 
+def addSclaeRow(M, r1, r2, scale):
+    M[r1] = [x + scale * y for x, y in zip(M[r1], M[r2])]
+    return
 
 def gj_Solve(A, b, decPts=4, epsilon=1.0e-16):
+	matxRound(A, decPts)
+	matxRound(b, decPts) 
     Ab = augmentMatrix(A, b)
     A_t = transpose(A)
+    
     for col_index in range(len(A[0])):
-        col_under_diag = transpose(A)[col_index][col_index:]
+        
+        col_under_diag = A_t[col_index][col_index:]
         max_row_index = col_index
-        max_value = 
+        max_value = A_t[col_index][max_row_index]
+        
+        for diag_row in range(len(col_under_diag)):
+        	if col_under_diag[diag_row] > max_value:
+        		max_value = col_under_diag[diag_row]
+        		max_row_index = diag_row + col_index
+        
+        if max_value < epsilon:
+            return None
+        else:
+            swapRows(Ab, col_index, max_row_index)
+            scale = 1.0/max_value
+            scaleRow(Ab, col_index, scale)
     return None
 
 

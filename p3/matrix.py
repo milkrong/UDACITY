@@ -68,6 +68,9 @@ def addSclaeRow(M, r1, r2, scale):
 def gj_Solve(A, b, decPts=4, epsilon=1.0e-16):
 	matxRound(A, decPts)
 	matxRound(b, decPts) 
+	
+	if not len(A) == len(B):
+	    return None
     Ab = augmentMatrix(A, b)
     A_t = transpose(A)
     
@@ -86,9 +89,15 @@ def gj_Solve(A, b, decPts=4, epsilon=1.0e-16):
             return None
         else:
             swapRows(Ab, col_index, max_row_index)
-            scale = 1.0/max_value
-            scaleRow(Ab, col_index, scale)
-    return None
+            scale_to_one = 1.0/max_value
+            scaleRow(Ab, col_index, scale_to_one)
+            for wait_zero_index in range(len(Ab)):
+                scale_to_zero = -Ab[wait_zero_index][col_index]
+                if wait_zero_index == col_index:
+                    continue
+                else:
+                    scaleRow(Ab, wait_zero_index, scale_to_zero)
+    return transpose(Ab)[-1]
 
 
 if __name__ == '__main__':
